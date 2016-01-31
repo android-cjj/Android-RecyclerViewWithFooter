@@ -4,10 +4,11 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class FootView implements FootItem {
+public class DefaultFootItem implements FootItem {
 
     private ProgressBar mProgressBar;
     private TextView mLoadingText;
@@ -15,9 +16,9 @@ public class FootView implements FootItem {
 
 
     @Override
-    public View onCreateView(View parent) {
+    public View onCreateView(ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.view_footer_loading, null);
+        View view = inflater.inflate(R.layout.view_footer_loading, parent,false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.load_progress);
         mEndTextView = (TextView) view.findViewById(R.id.tv_end);
         mLoadingText = (TextView) view.findViewById(R.id.tv_load);
@@ -25,15 +26,22 @@ public class FootView implements FootItem {
     }
 
     @Override
-    public void onBindData(View view, int state) {
+    public void onBindData(View view, int state, CharSequence text) {
+
         if (state == RecyclerViewWithFooter.STATE_LOADING) {
-            showProgressBar(view.getContext().getResources().getString(R.string.loading));
+
+            if(TextUtils.isEmpty(text)){
+                showProgressBar(view.getContext().getResources().getString(R.string.loading));
+            }else {
+                showProgressBar(text);
+            }
         } else if (state == RecyclerViewWithFooter.STATE_END) {
-            showEnd("");
+
+            showEnd(text);
         }
     }
 
-    public void showProgressBar(String load) {
+    public void showProgressBar(CharSequence load) {
         mEndTextView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(load)) {
@@ -44,7 +52,7 @@ public class FootView implements FootItem {
         }
     }
 
-    public void showEnd(String end) {
+    public void showEnd(CharSequence end) {
         mEndTextView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mLoadingText.setVisibility(View.GONE);

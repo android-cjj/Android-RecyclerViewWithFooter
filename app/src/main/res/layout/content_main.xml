@@ -10,12 +10,15 @@
     tools:showIn="@layout/activity_main">
 
 
-
-   <com.cjj.loadmorervdemo.LoadMoreRecycleView
+<android.support.v4.widget.SwipeRefreshLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+   <com.cjj.loadmorervdemo.RecyclerViewWithFooter
        android:id="@+id/rv_load_more"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-       </com.cjj.loadmorervdemo.LoadMoreRecycleView>
 
+       </com.cjj.loadmorervdemo.RecyclerViewWithFooter>
+</android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

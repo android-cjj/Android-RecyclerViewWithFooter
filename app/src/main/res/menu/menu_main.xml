@@ -17,4 +17,11 @@
         android:orderInCategory="100"
         android:title="empty"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/noneAction"
+        android:orderInCategory="100"
+        android:title="none"
+        app:showAsAction="never"/>
+
 </menu>

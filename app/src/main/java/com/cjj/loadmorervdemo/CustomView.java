@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ public class CustomView extends RelativeLayout implements FootItem {
     }
 
     @Override
-    public View onCreateView(View parent) {
+    public View onCreateView(ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.view_footer_loading, this);
         mProgressBar = (ProgressBar) this.findViewById(R.id.load_progress);
@@ -31,10 +32,10 @@ public class CustomView extends RelativeLayout implements FootItem {
     }
 
     @Override
-    public void onBindData(View view, int state) {
-        if (state == LoadMoreRecycleView.STATE_LOADING) {
+    public void onBindData(View view, int state, CharSequence endStr) {
+        if (state == RecyclerViewWithFooter.STATE_LOADING) {
             showProgressBar();
-        } else if (state == LoadMoreRecycleView.STATE_END) {
+        } else if (state == RecyclerViewWithFooter.STATE_END) {
             showEnd("ccccccccccccccjjjjjjjjjjjjjjjjjjjj");
         }
     }

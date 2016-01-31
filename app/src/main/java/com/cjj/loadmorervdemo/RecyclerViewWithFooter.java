@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
  * 加载更多的RecycleView
  * Created by CJJ made a slight change
  */
-public class LoadMoreRecycleView extends RecyclerView {
+public class RecyclerViewWithFooter extends RecyclerView {
 
     Context mContext;
     private LoadMoreAdapter mLoadMoreAdapter;
@@ -27,24 +27,35 @@ public class LoadMoreRecycleView extends RecyclerView {
     public static final int STATE_EMPTY = 2;
     public static final int STATE_NONE = 3;
 
+
     @IntDef({STATE_END, STATE_LOADING, STATE_EMPTY, STATE_NONE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface State {
     }
 
-    private @State int mState = STATE_NONE;
+    private
+    @State
+    int mState = STATE_NONE;
 
-    public LoadMoreRecycleView(Context context) {
+    /**
+     * 默认的 FootItem;
+     */
+    private FootItem mFootItem = new DefaultFootItem();
+
+    private EmptyItem mEmptyItem = new DefaultEmptyItem(getContext());
+
+
+    public RecyclerViewWithFooter(Context context) {
         super(context);
         init();
     }
 
-    public LoadMoreRecycleView(Context context, AttributeSet attrs) {
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public LoadMoreRecycleView(Context context, AttributeSet attrs, int defStyle) {
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -136,7 +147,7 @@ public class LoadMoreRecycleView extends RecyclerView {
     /**
      * 加载到
      */
-    public void setLoadView() {
+    public void setLoad() {
         mState = STATE_LOADING;
         mIsGetDataForNet = false;
         this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
@@ -146,25 +157,41 @@ public class LoadMoreRecycleView extends RecyclerView {
     /**
      * 表示加载到最后了
      */
-    public void setEndView(CharSequence end) {
+    public void setEnd(CharSequence charSequence) {
         mIsGetDataForNet = false;
         mState = STATE_END;
-        mLoadMoreAdapter.setEndView(end);
+        mLoadMoreAdapter.setEndText(charSequence);
+        this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
+    }
+
+    public void setLoadText(CharSequence loadText) {
+        mLoadMoreAdapter.setLoadText(loadText);
         this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
     }
 
     /**
      * 设置 为空
      */
-    public void setEmptyView(String string, int resId) {
+    public void setEmpty(CharSequence empty, int resId) {
         mState = STATE_EMPTY;
-        mLoadMoreAdapter.setEmptyView(string, resId);
-        this.getAdapter().notifyDataSetChanged();
+        mLoadMoreAdapter.setEmptyInfo(empty, resId);
+        if (this.getAdapter() != null && isEmpty()) {
+
+            this.getAdapter().notifyDataSetChanged();
+        }
     }
 
-    public OnLoadMoreListenerWrap mOnLoadMoreListenerWrap;
 
-    public boolean isEnd() {
+    /**
+     * 是否数据为空
+     * @return
+     */
+    public boolean isEmpty() {
+
+        return (mState == STATE_NONE && getAdapter().getItemCount() == 0) || (mState != STATE_NONE && getAdapter().getItemCount() == 1);
+    }
+
+    public boolean loadMoreEnable() {
         return mState != STATE_LOADING;
     }
 
@@ -179,30 +206,31 @@ public class LoadMoreRecycleView extends RecyclerView {
         @Override
         public void onLoadMore() {
 
-            if (!mIsGetDataForNet && !isEnd()) {
+            if (!mIsGetDataForNet && !loadMoreEnable()) {
                 mIsGetDataForNet = true;
                 mOnLoadMoreListener.onLoadMore();
             }
         }
     }
 
-    public void addFootView(FootItem footItem)
-    {
+    public void setFootItem(FootItem footItem) {
         mFootItem = footItem;
     }
 
-    private FootItem mFootItem = new FootView();
+    public void setEmptyItem(EmptyItem emptyItem) {
+        mEmptyItem = emptyItem;
+    }
 
     public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public RecyclerView.Adapter mAdapter;
-        private EmptyView mEmptyView;
-        private String mEmptyStr;
+        private CharSequence mEmptyText;
         private int mEmptyIcon;
-        private CharSequence mEndStr;
+        private CharSequence mEndText;
 
         public static final int LOAD_MORE_VIEW_TYPE = -404;
         public static final int EMPTY_VIEW_TYPE = -403;
+        private CharSequence mLoadText;
 
         public LoadMoreAdapter(Adapter adapter) {
             mAdapter = adapter;
@@ -213,12 +241,11 @@ public class LoadMoreRecycleView extends RecyclerView {
 
             if (viewType == LOAD_MORE_VIEW_TYPE) {
 
-                return new LoadMoreVH(mFootItem.onCreateView(LoadMoreRecycleView.this));
+                return new LoadMoreVH(mFootItem.onCreateView(RecyclerViewWithFooter.this));
 
             } else if (viewType == EMPTY_VIEW_TYPE) {
 
-                mEmptyView = new EmptyView(mContext, parent);
-                return new EmptyVH(mEmptyView);
+                return new EmptyVH(mEmptyItem.onCreateView(RecyclerViewWithFooter.this));
             }
             return mAdapter.onCreateViewHolder(parent, viewType);
         }
@@ -282,14 +309,21 @@ public class LoadMoreRecycleView extends RecyclerView {
             }
         }
 
-        public void setEmptyView(String string, int resId) {
-            mEmptyStr = string;
+        public void setEmptyInfo(CharSequence string, int resId) {
+            mEmptyText = string;
             mEmptyIcon = resId;
         }
 
-        public void setEndView(CharSequence end) {
-            mEndStr = end;
+        public void setEndText(CharSequence end) {
+            mEndText = end;
         }
+
+        public void setLoadText(CharSequence loadText) {
+
+            mLoadText = loadText;
+
+        }
+
 
         class LoadMoreVH extends VH {
 
@@ -297,21 +331,17 @@ public class LoadMoreRecycleView extends RecyclerView {
 
             public LoadMoreVH(View itemView) {
                 super(itemView);
-                mItemView =  itemView;
+                mItemView = itemView;
             }
 
             @Override
             public void onBindViewHolder() {
                 super.onBindViewHolder();
-//                if (mState == STATE_LOADING) {
-////                    mFootView.showProgressBar();
-//                    mFootViewHolder.onBindData(mItemView,mState);
-//                } else if (mState == STATE_END) {
-////                    mFootView.showEnd(mEndStr);
-//                }
-
-
-                mFootItem.onBindData(mItemView,mState);
+                if (mState == STATE_LOADING) {
+                    mFootItem.onBindData(mItemView, mState, mLoadText);
+                } else if (mState == STATE_END) {
+                    mFootItem.onBindData(mItemView, mState, mEndText);
+                }
             }
         }
 
@@ -327,7 +357,7 @@ public class LoadMoreRecycleView extends RecyclerView {
             @Override
             public void onBindViewHolder() {
                 super.onBindViewHolder();
-                mEmptyView.setEmptyInfo(mEmptyStr, mEmptyIcon);
+                mEmptyItem.onBindData(itemView, mEmptyText, mEmptyIcon);
             }
         }
 

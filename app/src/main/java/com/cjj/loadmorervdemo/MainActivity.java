@@ -5,21 +5,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import in.srain.cube.views.ptr.PtrDefaultHandler;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
 
 public class MainActivity extends AppCompatActivity {
 
     private List<String> mDatas;
-    private LoadMoreRecycleView loadMoreRecycleView;
+    private RecyclerViewWithFooter mRecyclerViewWithFooter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +36,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         initData();
-        loadMoreRecycleView = (LoadMoreRecycleView) this.findViewById(R.id.rv_load_more);
-        loadMoreRecycleView.setAdapter(new HomeAdapter(this, mDatas));
+        mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
+        mRecyclerViewWithFooter.setAdapter(new HomeAdapter(this, mDatas));
 //        loadMoreRecycleView.setFootView(new CustomView(this));
-//        loadMoreRecycleView.setEmptyView("cjj", R.mipmap.ic_launcher);
-        loadMoreRecycleView.setOnLoadMoreListener(new OnLoadMoreListener() {
+//        loadMoreRecycleView.setEmpty("cjj", R.mipmap.ic_launcher);
+        mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
 
-                loadMoreRecycleView.postDelayed(new Runnable() {
+                mRecyclerViewWithFooter.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         addData(1);
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             mDatas.add("" + i);
         }
 
-        loadMoreRecycleView.getAdapter().notifyDataSetChanged();
+        mRecyclerViewWithFooter.getAdapter().notifyDataSetChanged();
 
     }
 
@@ -93,18 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.addMoreAction) {
-            loadMoreRecycleView.setLoadView();
+            mRecyclerViewWithFooter.setLoad();
             addData(1);
             return true;
         }
         if (id == R.id.endAction) {
 
-            loadMoreRecycleView.setEndView("没有更多东西");
+            mRecyclerViewWithFooter.setEnd("");
             return true;
         }
         if (id == R.id.emptyAction) {
             mDatas.clear();
-            loadMoreRecycleView.setEmptyView("没有数据", R.mipmap.ic_launcher);
+            mRecyclerViewWithFooter.setEmpty("没有数据", R.mipmap.ic_launcher);
 
             return true;
         }

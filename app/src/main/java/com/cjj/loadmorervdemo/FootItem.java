@@ -1,14 +1,15 @@
 package com.cjj.loadmorervdemo;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by cjj on 2016/1/30.
  */
 public interface FootItem {
 
-    public View onCreateView(View parent);
+    View onCreateView(ViewGroup parent);
 
-    public void onBindData(View view,int state);
+    void onBindData(View view, int state, CharSequence endStr);
 
 }

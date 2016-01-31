@@ -29,9 +29,9 @@ public class HorizontalView  implements FootItem {
 
     @Override
     public void onBindData(View view, int state) {
-        if (state == LoadMoreRecycleView.STATE_LOADING) {
+        if (state == RecyclerViewWithFooter.STATE_LOADING) {
 //            showProgressBar();
-        } else if (state == LoadMoreRecycleView.STATE_END) {
+        } else if (state == RecyclerViewWithFooter.STATE_END) {
 //            showEnd("ccccccccccccccjjjjjjjjjjjjjjjjjjjj");
         }
     }

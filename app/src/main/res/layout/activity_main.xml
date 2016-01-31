@@ -22,11 +22,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <in.srain.cube.views.ptr.PtrFrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
+
     <include layout="@layout/content_main"/>
-    </in.srain.cube.views.ptr.PtrFrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

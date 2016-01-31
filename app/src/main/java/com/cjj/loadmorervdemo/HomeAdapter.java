@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>
-{
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
+
     private Context mContext;
     private List<String> mDatas;
     public HomeAdapter(Context context,  List<String> mDatas){
