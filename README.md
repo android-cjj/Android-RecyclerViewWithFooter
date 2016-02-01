@@ -62,7 +62,7 @@ RecyclerViewWithFooter有三种类型，分别是：
     }
 ```
 
-底部FootView目前不设置setFootItem，默认为DefaultFootItem，内嵌入了MaterialFootItem，效果如下：
+底部FootView如果不设置setFootItem，默认为DefaultFootItem，内嵌入了MaterialFootItem，效果如下：
 
 （1）这是默认的效果
 
