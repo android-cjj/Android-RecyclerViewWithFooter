@@ -63,14 +63,22 @@ RecyclerViewWithFooter有三种类型，分别是：
 ```
 
 底部FootView目前不设置setFootItem，默认为DefaultFootItem，内嵌入了MaterialFootItem，效果如下：
+
 （1）这是默认的效果
+
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj2.jpg)
 
 （2）这是Material风格的
+
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj1.jpg)
 
 （3）你也可以自己定义
+
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj.jpg)
+
+差不多就这些了，想了解更多自己看源码。还有项目肯定存在bug,选择权在于你，不要出了bug就找骂原作者，你没有资格，因为如果你不用，有个屁的bug,如果你用了出问题可以加
+GitHub小伙伴交流群'' 477826523 
+进群有要求，至少你Github有东西，别问为什么，原则问题，呵呵。我也是个菜鸟，也希望高手能帮我，呵呵
 
 
 
