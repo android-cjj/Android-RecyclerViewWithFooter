@@ -77,8 +77,49 @@ RecyclerViewWithFooter有三种类型，分别是：
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj.jpg)
 
 差不多就这些了，想了解更多自己看源码。还有项目肯定存在bug,选择权在于你，不要出了bug就找骂原作者，你没有资格，因为如果你不用，有个屁的bug,如果你用了出问题可以加
+
 GitHub小伙伴交流群'' 477826523 
+
 进群有要求，至少你Github有东西，别问为什么，原则问题，呵呵。我也是个菜鸟，也希望高手能帮我，呵呵
+
+特别鸣谢：
+--------------------------------
+[dim](https://github.com/zzz40500),我死基友，呵呵
+
+我的微博：
+------------------------------
+[http://weibo.com/chenjijun2011]()http://weibo.com/chenjijun2011
+
+License
+=======
+
+    The MIT License (MIT)
+
+	Copyright (c) 2015 android-cjj
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+
+
+
+
+
 
 
 
