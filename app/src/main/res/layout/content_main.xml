@@ -11,11 +11,11 @@
 
 
 
-    <com.cjj.loadmorervdemo.RecyclerViewWithFooter
+    <com.cjj.RecyclerViewWithFooter
         android:id="@+id/rv_load_more"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.cjj.loadmorervdemo.RecyclerViewWithFooter>
+    </com.cjj.RecyclerViewWithFooter>
 
 </RelativeLayout>
