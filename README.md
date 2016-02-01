@@ -9,13 +9,71 @@
  说了那么多废话，我们还是说说这个项目的功能吧。顾名思义，其实它就是一个给RecyclerView加底部View的库
 
 
-截图
-----------------
+使用
+==================
+xml中的布局：
+```xml
+   <com.cjj.RecyclerViewWithFooter
+            android:id="@+id/rv_load_more"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+```
+java中
+```java
+     mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
+     mRecyclerViewWithFooter.setAdapter();
+```
+这样就可以了，是不是很简单，呵呵。
+
+如果需要监听Rv滑到底部，
+```java
+ mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                //加载数据
+            }
+        });
+```
+RecyclerViewWithFooter有三种类型，分别是：
+```java
+   /**
+     * 表示现在是切换成 load 状态
+     */
+    public void setLoad() {
+    }
+
+    /**
+     * 表示切换成没有更多数据状态
+     *
+     * @param end
+     */
+    public void setEnd(CharSequence end) {
+
+    }
+
+    /**
+     * 表示切换成 无数据 为空状态
+     *
+     * @param empty
+     * @param resId
+     */
+    public void setEmpty(CharSequence empty, @DrawableRes int resId) {
+    
+    }
+```
+
+底部FootView目前不设置setFootItem，默认为DefaultFootItem，内嵌入了MaterialFootItem，效果如下：
+（1）这是默认的效果
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj2.jpg)
 
+（2）这是Material风格的
 ![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj1.jpg)
 
-![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj3.jpg)
+（3）你也可以自己定义
+![](https://github.com/android-cjj/Android-RecyclerViewWithFooter/blob/master/img/cjj.jpg)
+
+
+
 
 
 
