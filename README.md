@@ -88,7 +88,7 @@ GitHub小伙伴交流群'' 477826523
 
 我的微博：
 ------------------------------
-[http://weibo.com/chenjijun2011]()http://weibo.com/chenjijun2011
+[http://weibo.com/chenjijun2011](http://weibo.com/chenjijun2011)
 
 License
 =======
