@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> mDatas;
     private RecyclerViewWithFooter mRecyclerViewWithFooter;
 
+    private Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               new Handler().postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                    @Override
                    public void run() {
                        addData();
@@ -123,5 +125,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }
