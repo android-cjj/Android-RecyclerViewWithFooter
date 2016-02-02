@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.cjj.DefaultFootItem;
 import com.cjj.MaterialFootItem;
 import com.cjj.OnLoadMoreListener;
 import com.cjj.RecyclerViewWithFooter;
@@ -36,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
                new Handler().postDelayed(new Runnable() {
                    @Override
                    public void run() {
-                       mDatas.clear();
                        addData();
                        swipeRefreshLayout.setRefreshing(false);
                    }
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
         mRecyclerViewWithFooter.setAdapter(new DemoRvAdapter(this, mDatas));
+        mRecyclerViewWithFooter.setStaggeredGridLayoutManager(2);
 //        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
         mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
 //        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         mDatas.add(R.mipmap.cat2);
         mDatas.add(R.mipmap.cat3);
         mDatas.add(R.mipmap.cjj);
+        mDatas.add(R.mipmap.cat1);
+        mDatas.add(R.mipmap.cat2);
     }
 
     protected void addData() {
@@ -78,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         mDatas.add(R.mipmap.cat2);
         mDatas.add(R.mipmap.cat3);
         mDatas.add(R.mipmap.cjj);
+        mDatas.add(R.mipmap.cat1);
+        mDatas.add(R.mipmap.cat2);
         mRecyclerViewWithFooter.getAdapter().notifyDataSetChanged();
 
     }
