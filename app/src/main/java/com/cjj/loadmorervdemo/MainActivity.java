@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.cjj.DefaultFootItem;
 import com.cjj.MaterialFootItem;
@@ -48,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
         mRecyclerViewWithFooter.setAdapter(new DemoRvAdapter(this, mDatas));
-        mRecyclerViewWithFooter.setStaggeredGridLayoutManager(2);
+//        mRecyclerViewWithFooter.setStaggeredGridLayoutManager(2);
 //        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
-        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
-//        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
+//        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
+        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
         mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
