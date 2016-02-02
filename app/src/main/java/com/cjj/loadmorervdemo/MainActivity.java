@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerViewWithFooter.setAdapter(new DemoRvAdapter(this, mDatas));
 //        mRecyclerViewWithFooter.setStaggeredGridLayoutManager(2);
 //        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
-//        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
-        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
+        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
+//        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
         mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {

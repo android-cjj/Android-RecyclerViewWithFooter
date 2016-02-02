@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * Created by 普益投 on 2016/2/1.
+ * Created by cjj on 2016/2/1.
  */
 public class MaterialFootItem extends FootItem {
     private CircleProgressBar mCircleProgressBar;
