@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoadMoreRvDemo</string>
+    <string name="app_name">RVWithFooter</string>
     <string name="action_settings">Settings</string>
     <string name="loading">加载中...</string>
     <string name="no_more">end</string>

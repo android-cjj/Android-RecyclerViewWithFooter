@@ -5,15 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.net.Inet4Address;
 import java.util.List;
 
 public class DemoRvAdapter extends RecyclerView.Adapter<DemoRvAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<String> mDatas;
-    public DemoRvAdapter(Context context, List<String> mDatas){
+    private List<Integer> mDatas;
+    public DemoRvAdapter(Context context, List<Integer> mDatas){
         mContext = context;
         this.mDatas = mDatas;
     }
@@ -30,7 +32,7 @@ public class DemoRvAdapter extends RecyclerView.Adapter<DemoRvAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        holder.tv.setText(mDatas.get(position));
+        holder.mImageViewv.setImageResource(mDatas.get(position));
     }
 
     @Override
@@ -42,12 +44,12 @@ public class DemoRvAdapter extends RecyclerView.Adapter<DemoRvAdapter.MyViewHold
     class MyViewHolder extends RecyclerView.ViewHolder
     {
 
-        TextView tv;
+        ImageView mImageViewv;
 
         public MyViewHolder(View view)
         {
             super(view);
-            tv = (TextView) view.findViewById(R.id.id_num);
+            mImageViewv = (ImageView) view.findViewById(R.id.iv_image);
         }
     }
 }

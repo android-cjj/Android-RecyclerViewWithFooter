@@ -8,13 +8,11 @@ import android.view.ViewGroup;
  */
 public abstract class FootItem {
 
-
-
     public CharSequence loadText;
     public CharSequence endText;
 
-    abstract View onCreateView(ViewGroup parent);
+    public abstract View onCreateView(ViewGroup parent);
 
-    abstract void onBindData(View view, int state);
+    public abstract void onBindData(View view, int state);
 
 }

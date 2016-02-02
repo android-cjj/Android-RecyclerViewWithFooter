@@ -10,12 +10,16 @@
     tools:showIn="@layout/activity_main">
 
 
-
-    <com.cjj.RecyclerViewWithFooter
-        android:id="@+id/rv_load_more"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.cjj.RecyclerViewWithFooter>
+        <com.cjj.RecyclerViewWithFooter
+            android:id="@+id/rv_load_more"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.cjj.RecyclerViewWithFooter>
 
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

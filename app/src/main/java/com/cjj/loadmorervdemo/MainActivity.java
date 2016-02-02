@@ -1,14 +1,14 @@
 package com.cjj.loadmorervdemo;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.cjj.MaterialFootItem;
 import com.cjj.OnLoadMoreListener;
 import com.cjj.RecyclerViewWithFooter;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<String> mDatas;
+    private List<Integer> mDatas;
     private RecyclerViewWithFooter mRecyclerViewWithFooter;
 
     @Override
@@ -28,19 +28,29 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_red_light,android.R.color.holo_blue_light,android.R.color.holo_green_light);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onRefresh() {
+               new Handler().postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       mDatas.clear();
+                       addData();
+                       swipeRefreshLayout.setRefreshing(false);
+                   }
+               },3000);
             }
         });
 
-
         initData();
+
         mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
         mRecyclerViewWithFooter.setAdapter(new DemoRvAdapter(this, mDatas));
+//        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
+        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
+//        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
         mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -48,29 +58,26 @@ public class MainActivity extends AppCompatActivity {
                 mRecyclerViewWithFooter.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        addData(1);
+                        addData();
                     }
-                }, 3000);
+                }, 2000);
             }
         });
-
-
-
-
     }
 
     protected void initData() {
-        mDatas = new ArrayList<String>();
-        for (int i = 0; i < 50; i++) {
-            mDatas.add("" + i);
-        }
+        mDatas = new ArrayList<>();
+        mDatas.add(R.mipmap.cat1);
+        mDatas.add(R.mipmap.cat2);
+        mDatas.add(R.mipmap.cat3);
+        mDatas.add(R.mipmap.cjj);
     }
 
-    protected void addData(int k) {
-        for (int i = k; i < k + 50; i++) {
-            mDatas.add("" + i);
-        }
-
+    protected void addData() {
+        mDatas.add(R.mipmap.cat1);
+        mDatas.add(R.mipmap.cat2);
+        mDatas.add(R.mipmap.cat3);
+        mDatas.add(R.mipmap.cjj);
         mRecyclerViewWithFooter.getAdapter().notifyDataSetChanged();
 
     }
@@ -92,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.addMoreAction) {
             mRecyclerViewWithFooter.setLoad();
-            addData(1);
+            addData();
             return true;
         }
         if (id == R.id.endAction) {
@@ -107,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
