@@ -7,19 +7,22 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 /**
- * @author cjj
  * 设置rv manager 类型
+ *
+ * @author cjj
  */
-public class RVUtils {
+class RecyclerViewUtils {
+
+    private static final String TAG = "RecyclerViewUtils";
 
     public static void setVerticalLinearLayout(RecyclerView rv) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(rv.getContext(), LinearLayoutManager.VERTICAL, false){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(rv.getContext(), LinearLayoutManager.VERTICAL, false) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
-                    Log.e("cjj", "meet a IOOBE in RecyclerView");
+                    Log.e(TAG, "meet an IndexOutOfBoundsException in RecyclerView");
                 }
             }
         };
@@ -27,13 +30,13 @@ public class RVUtils {
     }
 
     public static void setGridLayout(RecyclerView rv, int spanCount) {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false){
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
-                    Log.e("cjj", "meet a IOOBE in RecyclerView");
+                    Log.e(TAG, "meet an IndexOutOfBoundsException in RecyclerView");
                 }
             }
         };
@@ -66,15 +69,16 @@ public class RVUtils {
                         StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
                         int last[] = new int[staggeredGridLayoutManager.getSpanCount()];
                         staggeredGridLayoutManager.findLastVisibleItemPositions(last);
-                        for (int i = 0; i < last.length; i++) {
-                            Log.e("cjj", last[i] + "    " + recyclerView.getAdapter().getItemCount());
-                            if (last[i] >= recyclerView.getAdapter().getItemCount() - 1) {
+                        for (int aLast : last) {
+                            Log.i(TAG, aLast + "    " + recyclerView.getAdapter().getItemCount());
+                            if (aLast >= recyclerView.getAdapter().getItemCount() - 1) {
                                 onLoadMoreListener.onLoadMore();
                             }
                         }
                     }
                 }
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -83,13 +87,13 @@ public class RVUtils {
     }
 
     public static void setStaggeredGridLayoutManager(RecyclerView rv, int spanCount) {
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL){
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
                     super.onLayoutChildren(recycler, state);
                 } catch (IndexOutOfBoundsException e) {
-                    Log.e("cjj", "meet a IOOBE in RecyclerView");
+                    Log.e(RecyclerViewUtils.TAG, "meet an IndexOutOfBoundsException in RecyclerView");
                 }
             }
         };

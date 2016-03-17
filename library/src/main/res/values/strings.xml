@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Library</string>
-    <string name="loading">加载中...</string>
+    <string name="rv_with_footer_loading">加载中…</string>
+    <string name="rv_with_footer_empty">没有数据啦</string>
 </resources>

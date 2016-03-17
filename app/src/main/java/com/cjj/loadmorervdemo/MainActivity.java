@@ -7,10 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 import com.cjj.DefaultFootItem;
-import com.cjj.MaterialFootItem;
 import com.cjj.OnLoadMoreListener;
 import com.cjj.RecyclerViewWithFooter;
 
@@ -33,17 +31,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_red_light,android.R.color.holo_blue_light,android.R.color.holo_green_light);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mHandler.postDelayed(new Runnable() {
-                   @Override
-                   public void run() {
-                       addData();
-                       swipeRefreshLayout.setRefreshing(false);
-                   }
-               },3000);
+                    @Override
+                    public void run() {
+                        addData();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
             }
         });
 
@@ -52,13 +50,11 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerViewWithFooter = (RecyclerViewWithFooter) this.findViewById(R.id.rv_load_more);
         mRecyclerViewWithFooter.setAdapter(new DemoRvAdapter(this, mDatas));
 //        mRecyclerViewWithFooter.setStaggeredGridLayoutManager(2);
-//        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
-        mRecyclerViewWithFooter.setFootItem(new MaterialFootItem());//material 风格
+        mRecyclerViewWithFooter.setFootItem(new DefaultFootItem());//默认是这种
 //        mRecyclerViewWithFooter.setFootItem(new CustomFootItem());//自定义
         mRecyclerViewWithFooter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-
                 mRecyclerViewWithFooter.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -87,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         mDatas.add(R.mipmap.cat1);
         mDatas.add(R.mipmap.cat2);
         mRecyclerViewWithFooter.getAdapter().notifyDataSetChanged();
-
     }
 
     @Override
@@ -111,18 +106,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.endAction) {
-
             mRecyclerViewWithFooter.setEnd("没有更多数据了");
-
             return true;
         }
         if (id == R.id.emptyAction) {
             mDatas.clear();
             mRecyclerViewWithFooter.setEmpty("没有数据", R.mipmap.ic_launcher);
-
             return true;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

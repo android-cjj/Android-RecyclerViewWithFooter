@@ -5,6 +5,6 @@ package com.cjj;
  */
 public interface OnLoadMoreListener {
 
-
     void onLoadMore();
+
 }

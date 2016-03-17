@@ -18,71 +18,20 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class RecyclerViewWithFooter extends RecyclerView {
 
-    Context mContext;
-    private LoadMoreAdapter mLoadMoreAdapter;
-    private boolean mIsGetDataForNet = false;
-
     public static final int STATE_END = 0;
     public static final int STATE_LOADING = 1;
     public static final int STATE_EMPTY = 2;
     public static final int STATE_NONE = 3;
 
-
-    @IntDef({STATE_END, STATE_LOADING, STATE_EMPTY, STATE_NONE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-    }
-
+    private boolean mIsGetDataForNet = false;
     private
     @State
     int mState = STATE_NONE;
-
     /**
      * 默认的 FootItem;
      */
     private FootItem mFootItem = new DefaultFootItem();
-
     private EmptyItem mEmptyItem = new DefaultEmptyItem();
-
-
-    public RecyclerViewWithFooter(Context context) {
-        super(context);
-        init();
-    }
-
-    public RecyclerViewWithFooter(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public RecyclerViewWithFooter(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
-    }
-
-    private void init() {
-        mContext = getContext();
-        setVerticalLinearLayout();
-    }
-
-    public void setVerticalLinearLayout() {
-        RVUtils.setVerticalLinearLayout(this);
-    }
-
-    public void setGridLayout(int span) {
-        RVUtils.setGridLayout(this, span);
-    }
-
-    public void setStaggeredGridLayoutManager(int spanCount) {
-        RVUtils.setStaggeredGridLayoutManager(this, spanCount);
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        mState = STATE_LOADING;
-        RVUtils.setOnLastItemVisibleListener(this, new OnLoadMoreListenerWrap(onLoadMoreListener));
-    }
-
-
     private AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -129,17 +78,53 @@ public class RecyclerViewWithFooter extends RecyclerView {
         }
     };
 
+    public RecyclerViewWithFooter(Context context) {
+        super(context);
+        init();
+    }
+
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
+    private void init() {
+        setVerticalLinearLayout();
+    }
+
+    public void setVerticalLinearLayout() {
+        RecyclerViewUtils.setVerticalLinearLayout(this);
+    }
+
+    public void setGridLayout(int span) {
+        RecyclerViewUtils.setGridLayout(this, span);
+    }
+
+    public void setStaggeredGridLayoutManager(int spanCount) {
+        RecyclerViewUtils.setStaggeredGridLayoutManager(this, spanCount);
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        mState = STATE_LOADING;
+        RecyclerViewUtils.setOnLastItemVisibleListener(this, new OnLoadMoreListenerWrap(onLoadMoreListener));
+    }
 
     @Override
     public void setAdapter(Adapter adapter) {
+        LoadMoreAdapter loadMoreAdapter;
         if (adapter instanceof LoadMoreAdapter) {
-            mLoadMoreAdapter = (LoadMoreAdapter) adapter;
-            mLoadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+            loadMoreAdapter = (LoadMoreAdapter) adapter;
+            loadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
             super.setAdapter(adapter);
         } else {
-            mLoadMoreAdapter = new LoadMoreAdapter(adapter);
-            mLoadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-            super.setAdapter(mLoadMoreAdapter);
+            loadMoreAdapter = new LoadMoreAdapter(adapter);
+            loadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+            super.setAdapter(loadMoreAdapter);
         }
     }
 
@@ -166,7 +151,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
         return this;
     }
 
-
     public void setFootItem(FootItem footItem) {
         if (mFootItem != null) {
             if (footItem.endText == null) {
@@ -180,7 +164,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
     }
 
     public void setEmptyItem(EmptyItem emptyItem) {
-
         if (mEmptyItem != null) {
             if (emptyItem.emptyIcon == -1) {
                 emptyItem.emptyIcon = mEmptyItem.emptyIcon;
@@ -191,7 +174,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
         }
         mEmptyItem = emptyItem;
     }
-
 
     /**
      * 表示现在是切换成 load 状态
@@ -211,7 +193,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
      * @param end
      */
     public void setEnd(CharSequence end) {
-
         if (getAdapter() != null) {
 
             mIsGetDataForNet = false;
@@ -232,7 +213,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
             this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
         }
     }
-
 
     /**
      * 表示切换成 无数据 为空状态
@@ -264,7 +244,6 @@ public class RecyclerViewWithFooter extends RecyclerView {
         }
     }
 
-
     /**
      * 是否数据为空
      *
@@ -277,6 +256,11 @@ public class RecyclerViewWithFooter extends RecyclerView {
 
     public boolean loadMoreEnable() {
         return mState != STATE_LOADING;
+    }
+
+    @IntDef({STATE_END, STATE_LOADING, STATE_EMPTY, STATE_NONE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface State {
     }
 
     public class OnLoadMoreListenerWrap implements OnLoadMoreListener {
@@ -299,10 +283,9 @@ public class RecyclerViewWithFooter extends RecyclerView {
 
     public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        public RecyclerView.Adapter mAdapter;
-
         public static final int LOAD_MORE_VIEW_TYPE = -404;
         public static final int EMPTY_VIEW_TYPE = -403;
+        public RecyclerView.Adapter mAdapter;
 
         public LoadMoreAdapter(Adapter adapter) {
             mAdapter = adapter;
