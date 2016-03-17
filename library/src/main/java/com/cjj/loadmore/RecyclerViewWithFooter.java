@@ -1,12 +1,14 @@
-package com.cjj;
+package com.cjj.loadmore;
 
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,82 +16,38 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * A {@link RecyclerView} with footer which enables load more.
+ *
  * @author cjj
  */
 public class RecyclerViewWithFooter extends RecyclerView {
 
-    Context mContext;
-    private LoadMoreAdapter mLoadMoreAdapter;
-    private boolean mIsGetDataForNet = false;
+    private static final String TAG = "RecyclerViewWithFooter";
 
     public static final int STATE_END = 0;
     public static final int STATE_LOADING = 1;
     public static final int STATE_EMPTY = 2;
     public static final int STATE_NONE = 3;
+    public static final int STATE_PULL_TO_LOAD = 4;
 
+    private boolean mIsGetDataForNet = false;
 
-    @IntDef({STATE_END, STATE_LOADING, STATE_EMPTY, STATE_NONE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-    }
-
-    private
     @State
-    int mState = STATE_NONE;
+    private int mState = STATE_NONE;
 
     /**
      * 默认的 FootItem;
      */
     private FootItem mFootItem = new DefaultFootItem();
-
     private EmptyItem mEmptyItem = new DefaultEmptyItem();
 
-
-    public RecyclerViewWithFooter(Context context) {
-        super(context);
-        init();
-    }
-
-    public RecyclerViewWithFooter(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public RecyclerViewWithFooter(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
-    }
-
-    private void init() {
-        mContext = getContext();
-        setVerticalLinearLayout();
-    }
-
-    public void setVerticalLinearLayout() {
-        RVUtils.setVerticalLinearLayout(this);
-    }
-
-    public void setGridLayout(int span) {
-        RVUtils.setGridLayout(this, span);
-    }
-
-    public void setStaggeredGridLayoutManager(int spanCount) {
-        RVUtils.setStaggeredGridLayoutManager(this, spanCount);
-    }
-
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        mState = STATE_LOADING;
-        RVUtils.setOnLastItemVisibleListener(this, new OnLoadMoreListenerWrap(onLoadMoreListener));
-    }
-
-
     private AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
+
         @Override
         public void onChanged() {
             super.onChanged();
             reset();
         }
-
 
         private void reset() {
             mIsGetDataForNet = false;
@@ -129,168 +87,237 @@ public class RecyclerViewWithFooter extends RecyclerView {
         }
     };
 
+    public RecyclerViewWithFooter(Context context) {
+        super(context);
+        init();
+    }
+
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public RecyclerViewWithFooter(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
+    private void init() {
+        setVerticalLinearLayout();
+    }
+
+    public void setVerticalLinearLayout() {
+        RecyclerViewUtils.setVerticalLinearLayout(this);
+    }
+
+    public void setGridLayout(int span) {
+        RecyclerViewUtils.setGridLayout(this, span);
+    }
+
+    public void setStaggeredGridLayoutManager(int spanCount) {
+        RecyclerViewUtils.setStaggeredGridLayoutManager(this, spanCount);
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        mState = STATE_PULL_TO_LOAD;
+
+        final OnLoadMoreListenerWrapper wrapper = new OnLoadMoreListenerWrapper(onLoadMoreListener);
+
+        addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                    if (layoutManager instanceof LinearLayoutManager) {
+                        int lastVisiblePosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                        if (lastVisiblePosition >= recyclerView.getAdapter().getItemCount() - 1) {
+                            if (mState == STATE_PULL_TO_LOAD) {
+                                setLoading();
+                            }
+                            wrapper.onLoadMore();
+                        }
+                    } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+                        StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+                        int last[] = new int[staggeredGridLayoutManager.getSpanCount()];
+                        staggeredGridLayoutManager.findLastVisibleItemPositions(last);
+
+                        for (int aLast : last) {
+                            Log.i(TAG, aLast + "    " + recyclerView.getAdapter().getItemCount());
+                            if (aLast >= recyclerView.getAdapter().getItemCount() - 1) {
+                                if (mState == STATE_PULL_TO_LOAD) {
+                                    setLoading();
+                                }
+                                wrapper.onLoadMore();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void setAdapter(Adapter adapter) {
+        LoadMoreAdapter loadMoreAdapter;
         if (adapter instanceof LoadMoreAdapter) {
-            mLoadMoreAdapter = (LoadMoreAdapter) adapter;
-            mLoadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+            loadMoreAdapter = (LoadMoreAdapter) adapter;
+            loadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
             super.setAdapter(adapter);
         } else {
-            mLoadMoreAdapter = new LoadMoreAdapter(adapter);
-            mLoadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-            super.setAdapter(mLoadMoreAdapter);
+            loadMoreAdapter = new LoadMoreAdapter(adapter);
+            loadMoreAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+            super.setAdapter(loadMoreAdapter);
         }
     }
 
     /**
-     * 配置
+     * 设置loading提示字符串
      *
-     * @param loadText
-     * @return
+     * @param loadText 提示字符串
+     * @return {@link RecyclerViewWithFooter}
      */
-    public RecyclerViewWithFooter applyLoadText(CharSequence loadText) {
-        mFootItem.loadText = loadText;
+    public RecyclerViewWithFooter applyLoadingText(CharSequence loadText) {
+        mFootItem.loadingText = loadText;
         return this;
     }
 
-    public RecyclerViewWithFooter applyLoadEndText(CharSequence endText) {
+    public RecyclerViewWithFooter applyPullToLoadText(CharSequence pullToLoadText) {
+        mFootItem.pullToLoadText = pullToLoadText;
+        return this;
+    }
+
+    public RecyclerViewWithFooter applyEndText(CharSequence endText) {
         mFootItem.endText = endText;
         return this;
     }
 
     public RecyclerViewWithFooter applyEmptyText(CharSequence emptyText, @DrawableRes int drawableId) {
-
-        mEmptyItem.emptyIcon = drawableId;
-        mEmptyItem.emptyText = emptyText;
+        mEmptyItem.mEmptyIconRes = drawableId;
+        mEmptyItem.mEmptyText = emptyText;
         return this;
     }
-
 
     public void setFootItem(FootItem footItem) {
         if (mFootItem != null) {
             if (footItem.endText == null) {
                 footItem.endText = mFootItem.endText;
             }
-            if (footItem.loadText == null) {
-                footItem.loadText = mFootItem.loadText;
+            if (footItem.loadingText == null) {
+                footItem.loadingText = mFootItem.loadingText;
+            }
+            if (footItem.pullToLoadText == null) {
+                footItem.pullToLoadText = mFootItem.pullToLoadText;
             }
         }
         mFootItem = footItem;
     }
 
     public void setEmptyItem(EmptyItem emptyItem) {
-
         if (mEmptyItem != null) {
-            if (emptyItem.emptyIcon == -1) {
-                emptyItem.emptyIcon = mEmptyItem.emptyIcon;
+            if (emptyItem.mEmptyIconRes == -1) {
+                emptyItem.mEmptyIconRes = mEmptyItem.mEmptyIconRes;
             }
-            if (emptyItem.emptyText == null) {
-                emptyItem.emptyText = mEmptyItem.emptyText;
+            if (emptyItem.mEmptyText == null) {
+                emptyItem.mEmptyText = mEmptyItem.mEmptyText;
             }
         }
         mEmptyItem = emptyItem;
     }
 
-
     /**
-     * 表示现在是切换成 load 状态
+     * 切换为loading状态
      */
-    public void setLoad() {
-
+    public void setLoading() {
         if (getAdapter() != null) {
             mState = STATE_LOADING;
             mIsGetDataForNet = false;
-            this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
+            getAdapter().notifyItemChanged(getAdapter().getItemCount() - 1);
         }
     }
 
     /**
-     * 表示切换成没有更多数据状态
+     * 切换为没有更多数据状态
      *
-     * @param end
+     * @param end 提示字符串
      */
     public void setEnd(CharSequence end) {
-
         if (getAdapter() != null) {
-
             mIsGetDataForNet = false;
             mState = STATE_END;
             mFootItem.endText = end;
-            this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
+            getAdapter().notifyItemChanged(getAdapter().getItemCount() - 1);
         }
     }
 
     /**
-     * 表示切换成没有更多数据状态
+     * 切换为没有更多数据状态
      */
     public void setEnd() {
-
         if (getAdapter() != null) {
             mIsGetDataForNet = false;
             mState = STATE_END;
-            this.getAdapter().notifyItemChanged(this.getAdapter().getItemCount() - 1);
+            getAdapter().notifyItemChanged(getAdapter().getItemCount() - 1);
         }
     }
 
-
     /**
-     * 表示切换成 无数据 为空状态
+     * 切换成无数据状态
      *
-     * @param empty
-     * @param resId
+     * @param empty 无数据状态提示消息
+     * @param resId 无数据状态提示图标
      */
     public void setEmpty(CharSequence empty, @DrawableRes int resId) {
-
         if (getAdapter() != null) {
             mState = STATE_EMPTY;
-            mEmptyItem.emptyText = empty;
-            mEmptyItem.emptyIcon = resId;
+            mEmptyItem.mEmptyText = empty;
+            mEmptyItem.mEmptyIconRes = resId;
             if (isEmpty()) {
-                this.getAdapter().notifyDataSetChanged();
+                getAdapter().notifyDataSetChanged();
             }
         }
     }
 
     /**
-     * 表示切换成 无数据 为空状态
+     * 切换成无数据状态
      */
     public void setEmpty() {
         if (getAdapter() != null) {
             mState = STATE_EMPTY;
             if (isEmpty()) {
-                this.getAdapter().notifyDataSetChanged();
+                getAdapter().notifyDataSetChanged();
             }
         }
     }
 
-
     /**
-     * 是否数据为空
-     *
-     * @return
+     * 数据是否为空
      */
     private boolean isEmpty() {
-
-        return (mState == STATE_NONE && getAdapter().getItemCount() == 0) || (mState != STATE_NONE && getAdapter().getItemCount() == 1);
+        return (mState == STATE_NONE && getAdapter().getItemCount() == 0) ||
+                (mState != STATE_NONE && getAdapter().getItemCount() == 1);
     }
 
-    public boolean loadMoreEnable() {
+    public boolean isLoadMoreEnable() {
         return mState != STATE_LOADING;
     }
 
-    public class OnLoadMoreListenerWrap implements OnLoadMoreListener {
+    @IntDef({STATE_END, STATE_LOADING, STATE_EMPTY, STATE_NONE, STATE_PULL_TO_LOAD})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface State {
+    }
 
-        OnLoadMoreListener mOnLoadMoreListener;
+    private class OnLoadMoreListenerWrapper implements OnLoadMoreListener {
 
-        public OnLoadMoreListenerWrap(OnLoadMoreListener onLoadMoreListener) {
+        private OnLoadMoreListener mOnLoadMoreListener;
+
+        public OnLoadMoreListenerWrapper(OnLoadMoreListener onLoadMoreListener) {
             mOnLoadMoreListener = onLoadMoreListener;
         }
 
         @Override
         public void onLoadMore() {
-
-            if (!mIsGetDataForNet && !loadMoreEnable()) {
+            if (!mIsGetDataForNet && !isLoadMoreEnable()) {
                 mIsGetDataForNet = true;
                 mOnLoadMoreListener.onLoadMore();
             }
@@ -299,10 +326,10 @@ public class RecyclerViewWithFooter extends RecyclerView {
 
     public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        public RecyclerView.Adapter mAdapter;
-
         public static final int LOAD_MORE_VIEW_TYPE = -404;
         public static final int EMPTY_VIEW_TYPE = -403;
+
+        public RecyclerView.Adapter mAdapter;
 
         public LoadMoreAdapter(Adapter adapter) {
             mAdapter = adapter;
@@ -310,13 +337,9 @@ public class RecyclerViewWithFooter extends RecyclerView {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
             if (viewType == LOAD_MORE_VIEW_TYPE) {
-
                 return new LoadMoreVH();
-
             } else if (viewType == EMPTY_VIEW_TYPE) {
-
                 return new EmptyVH();
             }
             return mAdapter.onCreateViewHolder(parent, viewType);
@@ -338,9 +361,7 @@ public class RecyclerViewWithFooter extends RecyclerView {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             if (!isFootView(position)) {
-
                 mAdapter.onBindViewHolder(holder, position);
-
             } else {
                 if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
                     StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) (getLayoutManager()).generateDefaultLayoutParams();
@@ -353,9 +374,7 @@ public class RecyclerViewWithFooter extends RecyclerView {
             }
         }
 
-
-        boolean isFootView(int position) {
-
+        private boolean isFootView(int position) {
             return position == getItemCount() - 1 && mState != STATE_NONE;
         }
 
@@ -381,8 +400,10 @@ public class RecyclerViewWithFooter extends RecyclerView {
             }
         }
 
-
-        class LoadMoreVH extends VH {
+        /**
+         * 加载更多的ViewHolder
+         */
+        private class LoadMoreVH extends VH {
 
             private View mItemView;
 
@@ -394,18 +415,16 @@ public class RecyclerViewWithFooter extends RecyclerView {
             @Override
             public void onBindViewHolder() {
                 super.onBindViewHolder();
-                if (mState == STATE_LOADING) {
-                    mFootItem.onBindData(mItemView, mState);
-                } else if (mState == STATE_END) {
+                if (mState == STATE_LOADING || mState == STATE_END || mState == STATE_PULL_TO_LOAD) {
                     mFootItem.onBindData(mItemView, mState);
                 }
             }
         }
 
         /**
-         * 数据为空时候出现
+         * 数据为空时的ViewHolder
          */
-        class EmptyVH extends VH {
+        private class EmptyVH extends VH {
 
             public EmptyVH() {
                 super(mEmptyItem.onCreateView(RecyclerViewWithFooter.this));

@@ -5,16 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
     android:layout_margin="10dp"
+    android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        >
+        android:layout_centerInParent="true"
+        android:gravity="center">
 
         <ProgressBar
             android:id="@+id/load_progress"
@@ -26,17 +25,17 @@
             android:id="@+id/tv_load"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
+            android:text="@string/rv_with_footer_loading"
             android:textSize="12sp"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/tv_end"
-        android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:padding="10dp"
         android:visibility="gone"
         />
 </RelativeLayout>
