@@ -1,4 +1,4 @@
-package com.cjj;
+package com.cjj.loadmore;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,49 +41,6 @@ class RecyclerViewUtils {
             }
         };
         rv.setLayoutManager(gridLayoutManager);
-    }
-
-    /**
-     * 添加到底部的监听.
-     *
-     * @param rv
-     * @param onLoadMoreListener
-     */
-    public static void setOnLastItemVisibleListener(RecyclerView rv, final OnLoadMoreListener onLoadMoreListener) {
-        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-
-                    if (layoutManager instanceof LinearLayoutManager) {
-                        int lastVisiblePosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-
-                        if (lastVisiblePosition >= recyclerView.getAdapter().getItemCount() - 1) {
-                            onLoadMoreListener.onLoadMore();
-                        }
-                    } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-
-                        StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-                        int last[] = new int[staggeredGridLayoutManager.getSpanCount()];
-                        staggeredGridLayoutManager.findLastVisibleItemPositions(last);
-                        for (int aLast : last) {
-                            Log.i(TAG, aLast + "    " + recyclerView.getAdapter().getItemCount());
-                            if (aLast >= recyclerView.getAdapter().getItemCount() - 1) {
-                                onLoadMoreListener.onLoadMore();
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
     }
 
     public static void setStaggeredGridLayoutManager(RecyclerView rv, int spanCount) {

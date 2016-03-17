@@ -4,8 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cjj.FootItem;
-import com.cjj.RecyclerViewWithFooter;
+import com.cjj.loadmore.FootItem;
+import com.cjj.loadmore.RecyclerViewWithFooter;
 
 /**
  * Created by cjj on 2016/2/1.

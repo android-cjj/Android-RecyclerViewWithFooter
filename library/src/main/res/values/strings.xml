@@ -1,4 +1,5 @@
 <resources>
+    <string name="rv_with_footer_pull_load_more">上拉或点击加载更多</string>
     <string name="rv_with_footer_loading">加载中…</string>
     <string name="rv_with_footer_empty">没有数据啦</string>
 </resources>

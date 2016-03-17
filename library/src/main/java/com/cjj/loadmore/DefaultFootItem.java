@@ -1,4 +1,4 @@
-package com.cjj;
+package com.cjj.loadmore;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cjj.R;
+
 /**
  * @author cjj
  */
@@ -16,7 +18,6 @@ public class DefaultFootItem extends FootItem {
     private ProgressBar mProgressBar;
     private TextView mLoadingText;
     private TextView mEndTextView;
-
 
     @Override
     public View onCreateView(ViewGroup parent) {
@@ -31,15 +32,24 @@ public class DefaultFootItem extends FootItem {
     @Override
     public void onBindData(View view, int state) {
         if (state == RecyclerViewWithFooter.STATE_LOADING) {
-            if (TextUtils.isEmpty(loadText)) {
+            if (TextUtils.isEmpty(loadingText)) {
                 showProgressBar(view.getContext().getResources().getString(R.string.rv_with_footer_loading));
             } else {
-                showProgressBar(loadText);
+                showProgressBar(loadingText);
             }
         } else if (state == RecyclerViewWithFooter.STATE_END) {
-
             showEnd(endText);
+        } else if (state == RecyclerViewWithFooter.STATE_PULL_TO_LOAD) {
+            if (TextUtils.isEmpty(pullToLoadText)) {
+                showPullToLoad(view.getContext().getResources().getString(R.string.rv_with_footer_pull_load_more));
+            } else {
+                showPullToLoad(loadingText);
+            }
         }
+    }
+
+    public void showPullToLoad(CharSequence message) {
+        showEnd(message);
     }
 
     public void showProgressBar(CharSequence load) {

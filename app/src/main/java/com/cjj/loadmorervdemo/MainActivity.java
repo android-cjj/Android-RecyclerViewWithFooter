@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cjj.DefaultFootItem;
-import com.cjj.OnLoadMoreListener;
-import com.cjj.RecyclerViewWithFooter;
+import com.cjj.loadmore.DefaultFootItem;
+import com.cjj.loadmore.OnLoadMoreListener;
+import com.cjj.loadmore.RecyclerViewWithFooter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         mDatas = new ArrayList<>();
         mDatas.add(R.mipmap.cat1);
         mDatas.add(R.mipmap.cat2);
-        mDatas.add(R.mipmap.cat3);
-        mDatas.add(R.mipmap.cjj);
-        mDatas.add(R.mipmap.cat1);
-        mDatas.add(R.mipmap.cat2);
+//        mDatas.add(R.mipmap.cat3);
+//        mDatas.add(R.mipmap.cjj);
+//        mDatas.add(R.mipmap.cat1);
+//        mDatas.add(R.mipmap.cat2);
     }
 
     protected void addData() {
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.addMoreAction) {
-            mRecyclerViewWithFooter.setLoad();
+            mRecyclerViewWithFooter.setLoading();
             addData();
             return true;
         }

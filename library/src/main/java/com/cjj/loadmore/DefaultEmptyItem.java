@@ -1,10 +1,13 @@
-package com.cjj;
+package com.cjj.loadmore;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.cjj.R;
 
 /**
  * 默认的空数据视图
@@ -13,23 +16,29 @@ import android.widget.TextView;
  */
 public class DefaultEmptyItem extends EmptyItem {
 
-    private TextView mEmptyTV;
+    private TextView mEmptyTextView;
+    private ImageView mEmptyImageView;
 
     @Override
     public View onCreateView(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_layout, parent, false);
         view.setLayoutParams(new ViewGroup.LayoutParams(parent.getMeasuredWidth(), parent.getMeasuredHeight()));
-        mEmptyTV = (TextView) view.findViewById(R.id.tv_title);
+        mEmptyTextView = (TextView) view.findViewById(R.id.rv_with_footer_empty_title);
+        mEmptyImageView = (ImageView) view.findViewById(R.id.rv_with_footer_empty_icon);
         return view;
     }
 
     @Override
     public void onBindData(View view) {
-        if (TextUtils.isEmpty(emptyText)) {
-            mEmptyTV.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(mEmptyText)) {
+            mEmptyTextView.setVisibility(View.GONE);
         } else {
-            mEmptyTV.setVisibility(View.VISIBLE);
-            mEmptyTV.setText(emptyText);
+            mEmptyTextView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(mEmptyText);
+        }
+
+        if (mEmptyIconRes != -1) {
+            mEmptyImageView.setImageResource(mEmptyIconRes);
         }
     }
 }

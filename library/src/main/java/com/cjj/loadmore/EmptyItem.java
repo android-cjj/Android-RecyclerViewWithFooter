@@ -1,4 +1,4 @@
-package com.cjj;
+package com.cjj.loadmore;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +10,10 @@ import android.view.ViewGroup;
  */
 public abstract class EmptyItem {
 
-    public CharSequence emptyText;
-    public int emptyIcon = -1;
+    CharSequence mEmptyText;
+    int mEmptyIconRes = -1;
 
     abstract View onCreateView(ViewGroup parent);
+
     abstract void onBindData(View view);
 }
