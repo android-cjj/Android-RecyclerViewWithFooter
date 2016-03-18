@@ -4,6 +4,7 @@ package com.cjj.loadmore;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -364,9 +365,22 @@ public class RecyclerViewWithFooter extends RecyclerView {
                 mAdapter.onBindViewHolder(holder, position);
             } else {
                 if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
-                    StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) (getLayoutManager()).generateDefaultLayoutParams();
-                    layoutParams.setFullSpan(true);
-                    holder.itemView.setLayoutParams(layoutParams);
+                    ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                    if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
+                        ((StaggeredGridLayoutManager.LayoutParams) layoutParams).setFullSpan(true);
+                    }
+                } else if (getLayoutManager() instanceof GridLayoutManager) {
+                    final GridLayoutManager layoutManager = (GridLayoutManager) getLayoutManager();
+                    layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            int viewType = getAdapter().getItemViewType(position);
+                            if (viewType < 0) {
+                                return layoutManager.getSpanCount();
+                            }
+                            return 1;
+                        }
+                    });
                 }
                 if (holder instanceof VH) {
                     ((VH) holder).onBindViewHolder();
