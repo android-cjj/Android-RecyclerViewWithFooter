@@ -21,7 +21,7 @@ public class DefaultEmptyItem extends EmptyItem {
 
     @Override
     public View onCreateView(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_with_footer_empty_layout, parent, false);
         view.setLayoutParams(new ViewGroup.LayoutParams(parent.getMeasuredWidth(), parent.getMeasuredHeight()));
         mEmptyTextView = (TextView) view.findViewById(R.id.rv_with_footer_empty_title);
         mEmptyImageView = (ImageView) view.findViewById(R.id.rv_with_footer_empty_icon);

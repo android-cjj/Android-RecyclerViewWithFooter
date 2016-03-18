@@ -22,10 +22,10 @@ public class DefaultFootItem extends FootItem {
     @Override
     public View onCreateView(ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.view_footer_loading, parent, false);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.load_progress);
-        mEndTextView = (TextView) view.findViewById(R.id.tv_end);
-        mLoadingText = (TextView) view.findViewById(R.id.tv_load);
+        View view = inflater.inflate(R.layout.rv_with_footer_loading, parent, false);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.rv_with_footer_loading_progress);
+        mEndTextView = (TextView) view.findViewById(R.id.rv_with_footer_loading_end);
+        mLoadingText = (TextView) view.findViewById(R.id.rv_with_footer_loading_load);
         return view;
     }
 
