@@ -84,7 +84,7 @@ GitHub小伙伴交流群'' 477826523
 
 特别鸣谢：
 --------------------------------
-[dim](https://github.com/zzz40500),我死基友，呵呵
+[dim](https://github.com/zzz40500),[markzhai](https://github.com/markzhai)我死基友，呵呵
 
 我的微博：
 ------------------------------
